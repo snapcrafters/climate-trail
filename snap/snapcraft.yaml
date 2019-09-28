@@ -1,0 +1,76 @@
+base: core18
+name: climate-trail
+title: The Climate Trail
+summary: Surviving The Climate Apocalypse
+version: "1.6"
+description: |
+  The Climate Trail is a completely free (no ads, no in-app purchases) multi-platform game.
+
+  The game is about climate refugees fleeing ever worsening conditions after inaction on climate has rendered much of the USA (and the world) uninhabitable.  The game combines the adventure and play of the journey north with visual novel elements, where characters reveal how and why this climate apocalypse unfolded.
+
+  Like the game? Support the developer by paying what you think is fair on itch.io: https://deepstategames.itch.io/the-climate-trail-10
+
+  This snap is maintained by the Snapcrafters community, and is not necessarily
+  endorsed or officially maintained by the upstream developers.
+icon: snap/gui/climate-trail.png
+license: Proprietary
+
+architectures:
+ - build-on: amd64
+   run-on:   amd64
+
+grade: stable
+confinement: strict
+
+apps:
+  climate-trail:
+    command-chain: 
+      - bin/desktop-launch
+    command: ClimateTrail.sh
+    environment:
+      RENPY_LOG_BASE: $SNAP_USER_DATA
+    plugs:
+      - unity7
+      - opengl
+      - audio-playback
+      - pulseaudio  # audio playback support for snapd < 2.41
+      - screen-inhibit-control
+      - joystick
+      - x11
+
+parts:
+  climate-trail:
+    plugin: dump
+    source: ClimateTrail-1.6-linux.tar.bz2
+    organize:
+      'ClimateTrail-1.6-linux/' : './'
+
+  climate-trail-dependencies:
+    plugin: nil
+    stage-packages:
+        # OpenGL support
+      - libgl1-mesa-dri
+      - libgl1-mesa-glx
+      - libglu1-mesa
+        # For audio playback
+      - libpulse0
+        # Renpy dependencies
+      - libxmu6
+      - libxi6
+
+  # This part installs the glib dependencies and a `desktop-launch` script to initialise
+  # desktop-specific features such as OpenGL, fonts, themes and the XDG environment.
+  # 
+  # It is copied from the snapcraft desktop helpers project and the `source` key is
+  # changed to point to https://github.com/ubuntu/snapcraft-desktop-helpers.git
+  # Please periodically check the desktop helpers repo for updates and copy the changes.
+  #    https://github.com/ubuntu/snapcraft-desktop-helpers/blob/master/snapcraft.yaml
+  # 
+  desktop-glib-only:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    build-packages:
+    - libglib2.0-dev
+    plugin: make
+    source-subdir: glib-only
+    stage-packages:
+    - libglib2.0-bin

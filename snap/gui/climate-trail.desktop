@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=The Climate Trail
+Comment=Surviving The Climate Apocalypse
+StartupNotify=false
+Exec=climate-trail
+Icon=${SNAP}/meta/gui/climate-trail.png
+Terminal=false
+Type=Application
+Categories=Application;Game;RolePlaying
