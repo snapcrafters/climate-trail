@@ -24,19 +24,17 @@ confinement: strict
 
 apps:
   climate-trail:
-    command-chain: 
-      - bin/desktop-launch
+    extensions:
+      - gnome-3-28
     command: ClimateTrail.sh
     environment:
       RENPY_LOG_BASE: $SNAP_USER_DATA
     plugs:
-      - unity7
       - opengl
       - audio-playback
       - pulseaudio  # audio playback support for snapd < 2.41
       - screen-inhibit-control
       - joystick
-      - x11
 
 parts:
   climate-trail:
@@ -58,19 +56,17 @@ parts:
       - libxmu6
       - libxi6
 
-  # This part installs the glib dependencies and a `desktop-launch` script to initialise
-  # desktop-specific features such as OpenGL, fonts, themes and the XDG environment.
-  # 
-  # It is copied from the snapcraft desktop helpers project and the `source` key is
-  # changed to point to https://github.com/ubuntu/snapcraft-desktop-helpers.git
-  # Please periodically check the desktop helpers repo for updates and copy the changes.
-  #    https://github.com/ubuntu/snapcraft-desktop-helpers/blob/master/snapcraft.yaml
-  # 
-  desktop-glib-only:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    build-packages:
-    - libglib2.0-dev
-    plugin: make
-    source-subdir: glib-only
-    stage-packages:
-    - libglib2.0-bin
+  # https://snapcraft-utils-library.readthedocs.io/en/latest/lib/cleanup.html
+  cleanup:
+    after:  # Make this part run last; list all your other parts here
+      - climate-trail
+      - climate-trail-dependencies
+    plugin: nil
+    build-snaps:  # List all content-snaps and base snaps you're using here
+      - core18
+      - gnome-3-28-1804
+    override-prime: |
+      set -eux
+      for snap in "core18" "gnome-3-28-1804"; do  # List all content-snaps and base snaps you're using here
+        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      done
