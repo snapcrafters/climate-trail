@@ -2,7 +2,7 @@ base: core18
 name: climate-trail
 title: The Climate Trail
 summary: Surviving The Climate Apocalypse
-version: "1.6"
+version: "2.0"
 description: |
   The Climate Trail is a completely free (no ads, no in-app purchases) multi-platform game.
 
@@ -38,10 +38,12 @@ apps:
 
 parts:
   climate-trail:
+    after:
+      - climate-trail-dependencies
     plugin: dump
-    source: ClimateTrail-1.6-linux.tar.bz2
+    source: ClimateTrail-2.0-linux.tar.bz2
     organize:
-      'ClimateTrail-1.6-linux/' : './'
+      'ClimateTrail-2.0-linux/' : './'
 
   climate-trail-dependencies:
     plugin: nil
